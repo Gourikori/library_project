@@ -1,28 +1,36 @@
+from typing import List
+
 class Library:
     def __init__(self):
         """Initialize an empty library."""
-        self.books: list[str] = []
+        self.books: List[str] = []
 
     def add_book(self, title: str) -> str:
-        """Add a book to the library."""
+        """Add a book to the library (case-insensitive duplicate check)."""
         normalized_title = title.strip().lower()
-        if normalized_title in (book.lower() for book in self.books):
+        # Use a list comprehension to compare case-insensitively
+        if normalized_title in [book.lower() for book in self.books]:
             return "Book already exists"
-        self.books.append(title.strip())
+        # Store the cleaned original title
+        cleaned_title = title.strip()
+        if not cleaned_title:
+            return "Invalid title"
+        self.books.append(cleaned_title)
         return "Book added"
 
     def remove_book(self, title: str) -> str:
-        """Remove a book from the library."""
+        """Remove a book from the library (case-insensitive)."""
         normalized_title = title.strip().lower()
-        for book in self.books:
+        for idx, book in enumerate(self.books):
             if book.lower() == normalized_title:
-                self.books.remove(book)
+                # Remove by index to avoid issues while iterating
+                self.books.pop(idx)
                 return "Book removed"
         return "Book not found"
 
-    def list_books(self) -> list[str]:
+    def list_books(self) -> List[str]:
         """List all books in the library."""
-        return self.books.copy()
+        return list(self.books)  # return a copy
 
 
 def main():
